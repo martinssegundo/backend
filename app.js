@@ -25,6 +25,14 @@ app.get('/challenges', async (req, res) => {
   res.send(data);
 });
 
+app.get('/challenges/:id', async (req, res) => {
+  const {data, error} = await supabase
+      .from('challenges')
+      .select()
+      .eq('id', req.params.id)
+  res.send(data[0]);
+});
+
 app.get('/auth', async (req, res) => {
   const data = await supabase.auth.signInWithOAuth({
     provider: 'github'
