@@ -4,10 +4,15 @@ import morgan from 'morgan'
 import bodyParser from "body-parser";
 import cors from 'cors';
 
+
 const app = express();
 
+const corsOrigins = {
+  origin: ["https://boostingdevs.com","http://localhost:4200"],
+}
+
 app.use(cors({
-  origin: 'http://localhost:4200'
+  origin: 'http://localhost:4200', 
 }));
 
 // using morgan for logs
@@ -30,6 +35,7 @@ app.get('/challenges/:id', async (req, res) => {
       .from('challenges')
       .select()
       .eq('id', req.params.id)
+
   res.send(data[0]);
 });
 
@@ -41,7 +47,22 @@ app.get('/auth', async (req, res) => {
   res.send(data);
 })
 
+app.get('/auth/github', async (req, res) => {
+  passport.use(new GitHubStrategy({
+    clientID: GITHUB_CLIENT_ID,
+    clientSecret: GITHUB_CLIENT_SECRET,
+    callbackURL: "http://127.0.0.1:3000/auth/github/callback"
+  },
+  
+  function(accessToken, refreshToken, profile, done) {
+    User.findOrCreate({ githubId: profile.id }, function (err, user) {
+      return done(err, user);
+    });
+  }
+));
+})
+
+
 app.listen(3000, () => {
   console.log(`> Ready on http://localhost:3000`);
 });
-
