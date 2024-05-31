@@ -8,11 +8,11 @@ import cors from 'cors';
 const app = express();
 
 const corsOrigins = {
-  origin: ["https://boostingdevs.com","http://localhost:4200"],
+  origin: ["https://boostingdevs.com","http://localhost:4200", "https://backend-4rye.onrender.com"],
 }
 
 app.use(cors({
-  origin: 'http://localhost:4200', 
+  origin: corsOrigins, 
 }));
 
 // using morgan for logs
