@@ -1,4 +1,4 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get, HttpException, HttpStatus, Param } from '@nestjs/common';
 import { AppService } from './app.service';
 
 @Controller()
@@ -22,5 +22,20 @@ export class AppController {
     .eq('id', params.id)
 
     return data[0];
+  }
+
+  @Get('leads/:email')
+  async insertLead(@Param() { email }: any): Promise<any> {
+    const { error } = await this.appService.supabase
+    .from("leads")
+    .insert({ email: email})
+
+    const emailData = email;
+    
+    if(emailData.includes('@') && emailData.includes('.')) {
+      return { data: email };
+    }
+
+    throw new HttpException('Unprocessable Entity', HttpStatus.UNPROCESSABLE_ENTITY);
   }
 }
